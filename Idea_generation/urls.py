@@ -24,9 +24,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', views.generate_idea_from_news, name='generate_idea'),
+    path('', views.generate_idea_from_news, name='idea_generation'),
     path('project/', views.project_page, name='project_page'),
-    path('news/', views.tech_news_view, name='tech_news'),
+    path('news/', views.tech_news_view, name='news_scraping'),
+    path('start_project/', views.project, name='start_project'),
 ]
 
 # Serve static files from 'project/dist' directory in development

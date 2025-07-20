@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'Idea_Generation.urls'
+ROOT_URLCONF = 'Idea_generation.urls'
 import os
 
 TEMPLATES = [
@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Idea_Generation.wsgi.application'
+WSGI_APPLICATION = 'Idea_generation.wsgi.application'
 
 
 # Database
