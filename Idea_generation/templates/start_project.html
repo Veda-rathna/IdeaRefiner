@@ -1,0 +1,474 @@
+{% extends 'base.html' %}
+
+{% block title %}Start Project - Idea Generation Platform{% endblock %}
+
+{% block content %}
+<style>
+    .project-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .project-title {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .project-subtitle {
+        color: #666;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .project-form {
+        max-width: 700px;
+        margin: 0 auto;
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .form-input, .form-textarea, .form-select {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .submit-button {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .submit-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .submit-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .project-templates {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .template-card {
+        background: white;
+        border: 2px solid #f0f0f0;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .template-card:hover {
+        border-color: #667eea;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+    }
+
+    .template-card.selected {
+        border-color: #667eea;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    }
+
+    .template-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .template-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .template-description {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 6px;
+        background: #f0f0f0;
+        border-radius: 3px;
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    .step-indicator {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    .step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f0f0f0;
+        color: #999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin: 0 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .step.active {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .step.completed {
+        background: #28a745;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .project-templates {
+            grid-template-columns: 1fr;
+        }
+
+        .project-form {
+            padding: 1.5rem;
+        }
+
+        .project-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="project-header">
+    <h1 class="project-title">🚀 Start New Project</h1>
+    <p class="project-subtitle">Transform your ideas into reality with our guided project creation process</p>
+</div>
+
+<div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<div class="step-indicator">
+    <div class="step active" id="step1">1</div>
+    <div class="step" id="step2">2</div>
+    <div class="step" id="step3">3</div>
+</div>
+
+<!-- Step 1: Project Template Selection -->
+<div id="templateStep" class="step-content">
+    <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">Choose Your Project Template</h2>
+    
+    <div class="project-templates">
+        <div class="template-card" onclick="selectTemplate('web-app')">
+            <div class="template-icon">🌐</div>
+            <div class="template-title">Web Application</div>
+            <div class="template-description">Full-stack web application with modern frameworks</div>
+        </div>
+        
+        <div class="template-card" onclick="selectTemplate('mobile-app')">
+            <div class="template-icon">📱</div>
+            <div class="template-title">Mobile App</div>
+            <div class="template-description">Cross-platform mobile application</div>
+        </div>
+        
+        <div class="template-card" onclick="selectTemplate('ai-project')">
+            <div class="template-icon">🤖</div>
+            <div class="template-title">AI/ML Project</div>
+            <div class="template-description">Machine learning and AI-powered solution</div>
+        </div>
+        
+        <div class="template-card" onclick="selectTemplate('api-service')">
+            <div class="template-icon">⚡</div>
+            <div class="template-title">API Service</div>
+            <div class="template-description">RESTful API and microservices</div>
+        </div>
+    </div>
+</div>
+
+<!-- Step 2: Project Details -->
+<div id="detailsStep" class="step-content" style="display: none;">
+    <form class="project-form" id="projectForm">
+        <div class="form-group">
+            <label class="form-label" for="projectName">Project Name</label>
+            <input type="text" id="projectName" class="form-input" placeholder="Enter your project name" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="projectDescription">Project Description</label>
+            <textarea id="projectDescription" class="form-textarea" placeholder="Describe your project goals and features" required></textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="projectCategory">Category</label>
+                <select id="projectCategory" class="form-select" required>
+                    <option value="">Select category</option>
+                    <option value="business">Business</option>
+                    <option value="education">Education</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="productivity">Productivity</option>
+                    <option value="social">Social</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="projectTimeline">Timeline</label>
+                <select id="projectTimeline" class="form-select" required>
+                    <option value="">Select timeline</option>
+                    <option value="1-month">1 Month</option>
+                    <option value="3-months">3 Months</option>
+                    <option value="6-months">6 Months</option>
+                    <option value="1-year">1 Year</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="projectTechnologies">Preferred Technologies</label>
+            <input type="text" id="projectTechnologies" class="form-input" placeholder="e.g., React, Python, Node.js, MongoDB">
+        </div>
+    </form>
+</div>
+
+<!-- Step 3: Confirmation -->
+<div id="confirmationStep" class="step-content" style="display: none;">
+    <div class="project-form">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">🎉 Project Ready to Launch!</h2>
+        
+        <div id="projectSummary" style="background: #f8f9fa; padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
+            <!-- Project summary will be populated here -->
+        </div>
+
+        <div style="text-align: center;">
+            <p style="color: #666; margin-bottom: 2rem;">Your project structure and initial files will be generated based on your selections.</p>
+        </div>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 2rem;">
+    <button id="prevButton" class="submit-button" style="display: none; width: auto; margin-right: 1rem; background: #6c757d;" onclick="previousStep()">← Previous</button>
+    <button id="nextButton" class="submit-button" style="width: auto;" onclick="nextStep()">Next →</button>
+    <button id="createButton" class="submit-button" style="display: none; width: auto;" onclick="createProject()">Create Project 🚀</button>
+</div>
+
+<script>
+    let currentStep = 1;
+    let selectedTemplate = '';
+    const totalSteps = 3;
+
+    function updateProgress() {
+        const progress = (currentStep / totalSteps) * 100;
+        document.getElementById('progressFill').style.width = progress + '%';
+        
+        // Update step indicators
+        for (let i = 1; i <= totalSteps; i++) {
+            const step = document.getElementById(`step${i}`);
+            if (i < currentStep) {
+                step.className = 'step completed';
+            } else if (i === currentStep) {
+                step.className = 'step active';
+            } else {
+                step.className = 'step';
+            }
+        }
+    }
+
+    function selectTemplate(template) {
+        selectedTemplate = template;
+        
+        // Remove previous selection
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // Add selection to clicked card
+        event.currentTarget.classList.add('selected');
+        
+        // Enable next button
+        document.getElementById('nextButton').disabled = false;
+    }
+
+    function showStep(step) {
+        // Hide all steps
+        document.querySelectorAll('.step-content').forEach(content => {
+            content.style.display = 'none';
+        });
+        
+        // Show current step
+        if (step === 1) {
+            document.getElementById('templateStep').style.display = 'block';
+            document.getElementById('prevButton').style.display = 'none';
+            document.getElementById('nextButton').style.display = 'inline-block';
+            document.getElementById('createButton').style.display = 'none';
+        } else if (step === 2) {
+            document.getElementById('detailsStep').style.display = 'block';
+            document.getElementById('prevButton').style.display = 'inline-block';
+            document.getElementById('nextButton').style.display = 'inline-block';
+            document.getElementById('createButton').style.display = 'none';
+        } else if (step === 3) {
+            document.getElementById('confirmationStep').style.display = 'block';
+            document.getElementById('prevButton').style.display = 'inline-block';
+            document.getElementById('nextButton').style.display = 'none';
+            document.getElementById('createButton').style.display = 'inline-block';
+            
+            // Populate project summary
+            populateProjectSummary();
+        }
+    }
+
+    function nextStep() {
+        if (currentStep === 1 && !selectedTemplate) {
+            alert('Please select a project template first.');
+            return;
+        }
+        
+        if (currentStep === 2) {
+            // Validate form
+            const form = document.getElementById('projectForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+        }
+        
+        if (currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+            updateProgress();
+        }
+    }
+
+    function previousStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+            updateProgress();
+        }
+    }
+
+    function populateProjectSummary() {
+        const projectName = document.getElementById('projectName').value;
+        const projectDescription = document.getElementById('projectDescription').value;
+        const projectCategory = document.getElementById('projectCategory').value;
+        const projectTimeline = document.getElementById('projectTimeline').value;
+        const projectTechnologies = document.getElementById('projectTechnologies').value;
+        
+        const templateNames = {
+            'web-app': '🌐 Web Application',
+            'mobile-app': '📱 Mobile App',
+            'ai-project': '🤖 AI/ML Project',
+            'api-service': '⚡ API Service'
+        };
+        
+        const summary = `
+            <h3 style="color: #333; margin-bottom: 1rem;">${projectName}</h3>
+            <p style="margin-bottom: 1rem;"><strong>Template:</strong> ${templateNames[selectedTemplate]}</p>
+            <p style="margin-bottom: 1rem;"><strong>Category:</strong> ${projectCategory}</p>
+            <p style="margin-bottom: 1rem;"><strong>Timeline:</strong> ${projectTimeline}</p>
+            <p style="margin-bottom: 1rem;"><strong>Technologies:</strong> ${projectTechnologies || 'Default stack'}</p>
+            <p style="margin-bottom: 1rem;"><strong>Description:</strong></p>
+            <p style="color: #666; font-style: italic;">${projectDescription}</p>
+        `;
+        
+        document.getElementById('projectSummary').innerHTML = summary;
+    }
+
+    function createProject() {
+        // Simulate project creation
+        const createButton = document.getElementById('createButton');
+        createButton.disabled = true;
+        createButton.textContent = 'Creating Project...';
+        
+        setTimeout(() => {
+            alert('🎉 Project created successfully! You can now start developing your idea.');
+            // Reset form
+            currentStep = 1;
+            selectedTemplate = '';
+            document.getElementById('projectForm').reset();
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            showStep(1);
+            updateProgress();
+            createButton.disabled = false;
+            createButton.textContent = 'Create Project 🚀';
+        }, 2000);
+    }
+
+    // Initialize
+    updateProgress();
+    showStep(1);
+</script>
+{% endblock %}

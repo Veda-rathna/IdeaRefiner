@@ -1,8 +1,12 @@
 from django.shortcuts import render
 from django.contrib import messages
+from django.http import HttpResponse
 from keybert import KeyBERT
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+import requests
+from bs4 import BeautifulSoup
+import os
 
 # Initialize once
 kw_model = KeyBERT()
@@ -28,33 +32,58 @@ def load_model():
         print(f"Error loading model: {e}")
         return None, None
 
+def fetch_tech_news():
+    """
+    Scrapes daily technology news from a tech news website and returns formatted news items.
+    Returns a list of dictionaries containing title and description.
+    """
+    news_items = []
+    url = "https://techcrunch.com/category/technology/"  # Example URL, can be modified
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        # Adjust selectors based on the website's structure
+        articles = soup.find_all('article', class_='post-block')[:5]  # Limit to 5 articles
+        for article in articles:
+            title_elem = article.find('h2', class_='post-block__title')
+            desc_elem = article.find('div', class_='post-block__content')
+
+            title = title_elem.text.strip() if title_elem else "No title available"
+            description = desc_elem.text.strip() if desc_elem else "No description available"
+
+            news_items.append({
+                'title': title,
+                'description': description
+            })
+
+    except Exception as e:
+        print(f"Error scraping news: {e}")
+        return []
+
+    return news_items
+
+def tech_news_view(request):
+    """
+    View to render the news scraping page with the latest tech news.
+    """
+    context = {
+        'tech_news': fetch_tech_news()
+    }
+    if not context['tech_news']:
+        messages.error(request, "Failed to fetch tech news. Please try again later.")
+    return render(request, 'news_scraping.html', context)
 
 def generate_idea_from_news(request):
     context = {}
     
     if request.method == 'POST':
         news_text = request.POST.get('news_text', '').strip()
-        # ...existing code...
-    return render(request, 'idea_form.html', context)
-
-
-# Serve the React/Vite frontend from the 'project' folder
-from django.http import HttpResponse
-import os
-
-
-def project_page(request):
-    # Serve the built frontend (after npm run build) from project/dist/index.html
-    dist_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'project', 'dist', 'index.html')
-    try:
-        with open(dist_path, encoding='utf-8') as f:
-            return HttpResponse(f.read())
-    except FileNotFoundError:
-        return HttpResponse("Built index.html not found. Please run 'npm run build' in the project directory.", status=404)
-
-    if request.method == 'POST':
-        news_text = request.POST.get('news_text', '').strip()
-
         if not news_text:
             messages.error(request, "Please enter a news article.")
             return render(request, 'idea_form.html', context)
@@ -107,4 +136,18 @@ def project_page(request):
             print(f"Error: {e}")
             messages.error(request, "An error occurred during generation.")
 
+    # Fetch daily tech news
+    context['tech_news'] = fetch_tech_news()
     return render(request, 'idea_form.html', context)
+
+def project_page(request):
+    """
+    Serve the React/Vite frontend from the 'project' folder
+    """
+    # Serve the built frontend (after npm run build) from project/dist/index.html
+    dist_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'project', 'dist', 'index.html')
+    try:
+        with open(dist_path, 'r', encoding='utf-8') as f:
+            return HttpResponse(f.read(), content_type='text/html')
+    except FileNotFoundError:
+        return HttpResponse("Built index.html not found. Please run 'npm run build' in the project directory.", status=404)

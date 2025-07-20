@@ -26,7 +26,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', views.generate_idea_from_news, name='generate_idea'),
     path('project/', views.project_page, name='project_page'),
-
+    path('news/', views.tech_news_view, name='tech_news'),
 ]
 
 # Serve static files from 'project/dist' directory in development
