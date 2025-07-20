@@ -15,10 +15,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 # urls.py (main project urls.py)
+
 from django.urls import path
 from . import views
 
+# For serving static files in development
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('', views.generate_idea_from_news, name='generate_idea'),
+    path('project/', views.project_page, name='project_page'),
+
 ]
+
+# Serve static files from 'project/dist' directory in development
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+    # Also serve /assets/ from dist for Vite builds
+    from django.views.static import serve
+    import os
+    urlpatterns += [
+        path('assets/<path:path>', serve, {'document_root': os.path.join(settings.STATICFILES_DIRS[0], 'assets')})
+    ]
 

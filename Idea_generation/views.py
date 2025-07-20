@@ -31,6 +31,26 @@ def load_model():
 
 def generate_idea_from_news(request):
     context = {}
+    
+    if request.method == 'POST':
+        news_text = request.POST.get('news_text', '').strip()
+        # ...existing code...
+    return render(request, 'idea_form.html', context)
+
+
+# Serve the React/Vite frontend from the 'project' folder
+from django.http import HttpResponse
+import os
+
+
+def project_page(request):
+    # Serve the built frontend (after npm run build) from project/dist/index.html
+    dist_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'project', 'dist', 'index.html')
+    try:
+        with open(dist_path, encoding='utf-8') as f:
+            return HttpResponse(f.read())
+    except FileNotFoundError:
+        return HttpResponse("Built index.html not found. Please run 'npm run build' in the project directory.", status=404)
 
     if request.method == 'POST':
         news_text = request.POST.get('news_text', '').strip()
