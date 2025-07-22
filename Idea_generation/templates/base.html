@@ -1,235 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Idea Generation Platform{% endblock %}</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Idea Refiner{% endblock %}</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Navigation Sidebar */
+      body {
+        background: #181a20;
+        color: #e8eaed;
+        font-family: "Inter", "Segoe UI", Arial, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+      }
+      .container {
+        display: flex;
+        min-height: 100vh;
+        padding-top: 60px;
+      }
+      .top-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: #23262f;
+        display: flex;
+        align-items: center;
+        padding: 0 2rem 0 72px;
+        z-index: 20;
+        border-bottom: 1px solid rgba(136, 192, 208, 0.1);
+      }
+      .navbar-title {
+        color: #88c0d0;
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+      .sidebar {
+        width: 60px;
+        background: #23262f;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: fixed;
+        top: 60px;
+        height: calc(100vh - 60px);
+        z-index: 10;
+        padding-top: 20px;
+        overflow: hidden;
+      }
+      .sidebar:hover {
+        width: 180px;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+      }
+      .nav {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+      }
+      .nav-item {
+        width: 100%;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 0.8rem 0;
+        border-radius: 8px;
+        margin: 0 0.5rem 1rem 0.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .nav-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(136, 192, 208, 0.1), transparent);
+        transition: left 0.6s ease;
+      }
+      .nav-item:hover::before {
+        left: 100%;
+      }
+      .nav-item:hover {
+        background: rgba(136, 192, 208, 0.08);
+        transform: translateX(4px);
+      }
+      .nav-item.active {
+        background: rgba(136, 192, 208, 0.15);
+        border-left: 3px solid #88c0d0;
+      }
+      .nav-item.active .nav-icon {
+        color: #8fbcbb;
+        transform: scale(1.05);
+      }
+      .nav-item.active .nav-text {
+        color: #88c0d0;
+        font-weight: 500;
+      }
+      .nav-icon {
+        font-size: 1.5rem;
+        color: #88c0d0;
+        margin-right: 0;
+        transition: margin 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-icon::before {
+        content: "";
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        background: #88c0d0;
+      }
+      .nav-icon.news::before {
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z' /%3E%3C/svg%3E");
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z' /%3E%3C/svg%3E");
+      }
+      .nav-icon.idea::before {
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' /%3E%3C/svg%3E");
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' /%3E%3C/svg%3E");
+      }
+      .nav-icon.project::before {
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 10V3L4 14h7v7l9-11h-7z' /%3E%3C/svg%3E");
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 10V3L4 14h7v7l9-11h-7z' /%3E%3C/svg%3E");
+      }
+      .sidebar:hover .nav-icon {
+        margin-right: 1rem;
+      }
+      .nav-text {
+        display: none;
+        color: #e8eaed;
+        font-size: 1rem;
+        font-weight: 400;
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        white-space: nowrap;
+      }
+      .sidebar:hover .nav-text {
+        display: inline;
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .main {
+        flex: 1;
+        margin-left: 60px;
+        padding: 1rem 2rem;
+        background: #181a20;
+        min-height: calc(100vh - 60px);
+        transition: margin-left 0.3s;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.05); }
+      }
+      @keyframes fadeInUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes slideInLeft {
+        0% { opacity: 0; transform: translateX(-20px); }
+        100% { opacity: 1; transform: translateX(0); }
+      }
+      @media (max-width: 600px) {
         .sidebar {
-            width: 280px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
-            padding: 2rem 0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            transition: all 0.3s ease;
+          width: 50px;
         }
-
         .sidebar:hover {
-            box-shadow: 2px 0 30px rgba(0, 0, 0, 0.15);
+          width: 120px;
         }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding: 0 1.5rem;
+        .main {
+          margin-left: 50px;
         }
-
-        .logo h1 {
-            color: #667eea;
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .logo p {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .nav-menu {
-            list-style: none;
-            padding: 0 1rem;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            text-decoration: none;
-            color: #555;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-link:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .nav-link:hover:before {
-            left: 100%;
-        }
-
-        .nav-link:hover {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .nav-icon {
-            margin-right: 1rem;
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        .nav-text {
-            font-weight: 500;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-        }
-
-        .content-wrapper {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            min-height: calc(100vh - 4rem);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-                padding: 1rem 0;
-            }
-
-            .main-content {
-                margin-left: 70px;
-            }
-
-            .nav-text, .logo p {
-                display: none;
-            }
-
-            .logo h1 {
-                font-size: 1.2rem;
-            }
-
-            .nav-link {
-                justify-content: center;
-                padding: 1rem;
-            }
-
-            .nav-icon {
-                margin-right: 0;
-            }
-        }
-
-        /* Active state */
-        .nav-link.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar">
-            <div class="logo">
-                <h1>💡 IdeaGen</h1>
-                <p>Innovation Hub</p>
-            </div>
-            
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{% url 'news_scraping' %}" class="nav-link">
-                        <span class="nav-icon">📰</span>
-                        <span class="nav-text">Tech News</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'idea_generation' %}" class="nav-link">
-                        <span class="nav-icon">🤖</span>
-                        <span class="nav-text">Idea Generation</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'start_project' %}" class="nav-link">
-                        <span class="nav-icon">🚀</span>
-                        <span class="nav-text">Start Project</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <span class="nav-icon">📊</span>
-                        <span class="nav-text">Analytics</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <span class="nav-icon">⚙️</span>
-                        <span class="nav-text">Settings</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <div class="content-wrapper">
-                {% block content %}
-                {% endblock %}
-            </div>
-        </main>
-    </div>
-
     <script>
+      // Maintain sidebar state across page loads
+      document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.querySelector('.sidebar');
+        const navItems = document.querySelectorAll('.nav-item a');
+        
         // Add active class to current page
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentPath = window.location.pathname;
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            navLinks.forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                }
-            });
+        const currentPath = window.location.pathname;
+        navItems.forEach(link => {
+          const navItem = link.closest('.nav-item');
+          if (link.getAttribute('href') === currentPath) {
+            navItem.classList.add('active');
+          }
         });
+        
+        // Handle navigation with smooth transition
+        navItems.forEach(link => {
+          link.addEventListener('click', function(e) {
+            // Don't prevent default, let the navigation happen
+            // but add a loading class for visual feedback
+            document.body.style.opacity = '0.8';
+            document.body.style.transition = 'opacity 0.2s ease';
+          });
+        });
+        
+        // Keep sidebar expanded if user was hovering
+        let sidebarExpanded = sessionStorage.getItem('sidebarExpanded') === 'true';
+        if (sidebarExpanded) {
+          sidebar.style.width = '180px';
+          document.querySelectorAll('.nav-text').forEach(text => {
+            text.style.display = 'inline';
+            text.style.opacity = '1';
+            text.style.transform = 'translateX(0)';
+          });
+          document.querySelectorAll('.nav-icon').forEach(icon => {
+            icon.style.marginRight = '1rem';
+          });
+        }
+        
+        sidebar.addEventListener('mouseenter', function() {
+          sessionStorage.setItem('sidebarExpanded', 'true');
+        });
+        
+        sidebar.addEventListener('mouseleave', function() {
+          sessionStorage.setItem('sidebarExpanded', 'false');
+        });
+      });
     </script>
-</body>
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <div class="top-navbar">
+      <div class="navbar-title">Idea Refiner</div>
+    </div>
+    <div class="container">
+      <nav class="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <a
+              href="{% url 'news_scraping' %}"
+              style="
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                width: 100%;
+                justify-content: flex-start;
+                padding-left: 1rem;
+              "
+            >
+              <span class="nav-icon news"></span>
+              <span class="nav-text">Tech News</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              href="{% url 'idea_generation' %}"
+              style="
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                width: 100%;
+                justify-content: flex-start;
+                padding-left: 1rem;
+              "
+            >
+              <span class="nav-icon idea"></span>
+              <span class="nav-text">Idea Generation</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              href="{% url 'start_project' %}"
+              style="
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                width: 100%;
+                justify-content: flex-start;
+                padding-left: 1rem;
+              "
+            >
+              <span class="nav-icon project"></span>
+              <span class="nav-text">Start Project</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <main class="main">{% block content %}{% endblock %}</main>
+    </div>
+  </body>
 </html>

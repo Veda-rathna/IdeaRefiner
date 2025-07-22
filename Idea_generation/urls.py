@@ -19,24 +19,10 @@ Including another URLconf
 from django.urls import path
 from . import views
 
-# For serving static files in development
-from django.conf import settings
-from django.conf.urls.static import static
-
 urlpatterns = [
-    path('', views.generate_idea_from_news, name='idea_generation'),
-    path('project/', views.project_page, name='project_page'),
-    path('news/', views.tech_news_view, name='news_scraping'),
-    path('start_project/', views.project, name='start_project'),
+    path('', views.home, name='home'),
+    path('news/', views.news_scraping, name='news_scraping'),
+    path('ideas/', views.idea_generation, name='idea_generation'),
+    path('start/', views.start_project, name='start_project'),
 ]
-
-# Serve static files from 'project/dist' directory in development
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
-    # Also serve /assets/ from dist for Vite builds
-    from django.views.static import serve
-    import os
-    urlpatterns += [
-        path('assets/<path:path>', serve, {'document_root': os.path.join(settings.STATICFILES_DIRS[0], 'assets')})
-    ]
 
