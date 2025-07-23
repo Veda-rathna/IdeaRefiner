@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block title %}Start Project{% endblock %} {% block content %}
 <div style="max-width: 500px; margin: 0 auto; text-align: center">
-  <h2 style="color: #88c0d0">Start Project</h2>
-  <p>Initiate a new project based on your ideas.</p>
+  <h2 style="color: #fff">Start Project</h2>
+  <p style="color: #d1d5db">Initiate a new project based on your ideas.</p>
   <form method="post">
     {% csrf_token %}
     <input
@@ -11,9 +11,9 @@
       style="
         width: 100%;
         padding: 0.7rem;
-        background: #23262f;
-        border: none;
-        color: #e8eaed;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #fff;
         border-radius: 8px;
       "
     />
@@ -21,20 +21,23 @@
       type="submit"
       style="
         margin-top: 1rem;
-        background: #88c0d0;
-        color: #181a20;
+        background: #fff;
+        color: #000;
         border: none;
         padding: 0.7rem 1.5rem;
         border-radius: 8px;
         cursor: pointer;
+        transition: all 0.2s ease;
       "
+      onmouseover="this.style.background='#f0f0f0'"
+      onmouseout="this.style.background='#fff'"
     >
       Start
     </button>
   </form>
   {% if project_name %}
-  <div style="margin-top: 2rem; color: #88c0d0">
-    Started Project: <span style="color: #e8eaed">{{ project_name }}</span>
+  <div style="margin-top: 2rem; color: #fff">
+    Started Project: <span style="color: #d1d5db">{{ project_name }}</span>
   </div>
   {% endif %}
 </div>

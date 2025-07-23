@@ -1,28 +1,31 @@
 {% extends 'base.html' %} {% block title %}Idea Generation{% endblock %} {%block content %}
 <div style="max-width: 500px; margin: 0 auto; text-align: center">
-  <h2 style="color: #88c0d0">Idea Generation</h2>
-  <p>Generate new ideas and brainstorm innovative concepts.</p>
+  <h2 style="color: #fff">Idea Generation</h2>
+  <p style="color: #d1d5db">Generate new ideas and brainstorm innovative concepts.</p>
   <form method="post">
     {% csrf_token %}
-    <input type="text" name="idea" placeholder="Enter your idea..." style="width: 100%; padding: 0.7rem; background: #23262f; border: none; color: #e8eaed; border-radius: 8px;" />
+    <input type="text" name="idea" placeholder="Enter your idea..." style="width: 100%; padding: 0.7rem; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px;" />
     <button
       type="submit"
       style="
         margin-top: 1rem;
-        background: #88c0d0;
-        color: #181a20;
+        background: #fff;
+        color: #000;
         border: none;
         padding: 0.7rem 1.5rem;
         border-radius: 8px;
         cursor: pointer;
+        transition: all 0.2s ease;
       "
+      onmouseover="this.style.background='#f0f0f0'"
+      onmouseout="this.style.background='#fff'"
     >
       Submit
     </button>
   </form>
   {% if idea %}
-  <div style="margin-top: 2rem; color: #88c0d0">
-    Submitted Idea: <span style="color: #e8eaed">{{ idea }}</span>
+  <div style="margin-top: 2rem; color: #fff">
+    Submitted Idea: <span style="color: #d1d5db">{{ idea }}</span>
   </div>
   {% endif %}
 </div>
