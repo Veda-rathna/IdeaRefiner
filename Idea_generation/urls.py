@@ -22,6 +22,7 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('news/', views.news_scraping, name='news_scraping'),
+    path('news/<int:pk>/', views.news_detail, name='news_detail'),
     path('ideas/', views.idea_generation, name='idea_generation'),
     path('start/', views.start_project, name='start_project'),
 ]

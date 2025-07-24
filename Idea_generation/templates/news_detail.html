@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}{{ article.title }}{% endblock %}
+{% block content %}
+<div style="max-width: 1000px; margin: 2rem auto; background: #181a1a; border-radius: 16px; box-shadow: 0 4px 32px rgba(0,0,0,0.35); padding: 3rem; position: relative;">
+  <button onclick="window.history.back()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: #333; color: #fff; border: none; border-radius: 6px; padding: 0.5rem 1rem; font-size: 1rem; cursor: pointer; z-index: 10; transition: background 0.2s;">✕ Close</button>
+  <div style="display: flex; align-items: flex-start; gap: 2rem;">
+    <img src="{{ article.image_url|default:'https://placehold.co/180x180?text=No+Image' }}" alt="News Image" style="width: 180px; height: 180px; object-fit: cover; border-radius: 12px; background: #222; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" />
+    <div style="flex: 1;">
+      <h1 style="color: #fff; font-size: 2rem; margin-bottom: 0.5rem; line-height: 1.2;">{{ article.title }}</h1>
+      <div style="color: #d1d5db; font-size: 1rem; margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        <span style="background: #333; color: #d1d5db; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500;">{{ article.source }}</span>
+        {% if article.published_date %}
+          <span style="color: #888;">{{ article.published_date|date:"M d, Y H:i" }}</span>
+        {% endif %}
+      </div>
+      <!-- Removed duplicate summary. Only show content below. -->
+      <a href="{{ article.url }}" target="_blank" style="background: #fff; color: #000; padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s ease;">Read Original</a>
+    </div>
+  </div>
+  {% if article.content %}
+    <hr style="margin: 2rem 0; border: none; border-top: 1px solid #333;" />
+    <div style="color: #d1d5db; font-size: 1.1rem; line-height: 1.8; background: #222; border-radius: 8px; padding: 1.5rem; margin-top: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      {{ article.content|linebreaks }}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
