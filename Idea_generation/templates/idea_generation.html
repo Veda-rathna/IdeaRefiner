@@ -1,32 +1,126 @@
-{% extends 'base.html' %} {% block title %}Idea Generation{% endblock %} {%block content %}
-<div style="max-width: 500px; margin: 0 auto; text-align: center">
-  <h2 style="color: #fff">Idea Generation</h2>
-  <p style="color: #d1d5db">Generate new ideas and brainstorm innovative concepts.</p>
-  <form method="post">
-    {% csrf_token %}
-    <input type="text" name="idea" placeholder="Enter your idea..." style="width: 100%; padding: 0.7rem; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px;" />
-    <button
-      type="submit"
-      style="
-        margin-top: 1rem;
-        background: #fff;
-        color: #000;
-        border: none;
-        padding: 0.7rem 1.5rem;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      "
-      onmouseover="this.style.background='#f0f0f0'"
-      onmouseout="this.style.background='#fff'"
-    >
-      Submit
-    </button>
-  </form>
-  {% if idea %}
-  <div style="margin-top: 2rem; color: #fff">
-    Submitted Idea: <span style="color: #d1d5db">{{ idea }}</span>
-  </div>
-  {% endif %}
+{% extends 'base.html' %}
+{% block title %}Idea Generation{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <div class="top-bar-title">AI Idea Generation</div>
+            </div>
+            <div class="top-bar-right">
+                <div class="top-bar-button">AI Model: Gemini Pro</div>
+                <div class="top-bar-button">🔒 Private</div>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <!-- Generated Idea Display -->
+            {% if generated_idea %}
+            <div class="generated-idea-display">
+                <div class="generated-idea-content">{{ generated_idea }}</div>
+            </div>
+            {% endif %}
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chat-messages">
+                {% if conversation_history %}
+                    {% for message in conversation_history %}
+                    <div class="message {{ message.role }}">
+                        <div class="message-avatar">
+                            {% if message.role == 'user' %}U{% else %}AI{% endif %}
+                        </div>
+                        <div class="message-content">{{ message.content }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="welcome-screen">
+                        <div class="welcome-logo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                            </svg>
+                        </div>
+                        <h1 class="welcome-title">Idea Generator</h1>
+                        <p class="welcome-subtitle">
+                            Ask questions about the generated idea or explore different aspects of the concept.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="input-container">
+                    <form method="POST" id="chat-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="continue_conversation">
+                        <div class="input-wrapper">
+                            <textarea 
+                                name="user_input" 
+                                class="main-input" 
+                                placeholder="Ask a question about this idea..."
+                                id="main-input"
+                                rows="1"
+                                required></textarea>
+                            <div class="input-actions">
+                                <button type="submit" class="input-button send-button" id="send-button">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                        <polygon points="22,2 15,22 11,13 2,9"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mainInput = document.getElementById('main-input');
+        const chatForm = document.getElementById('chat-form');
+        const sendButton = document.getElementById('send-button');
+        const chatMessages = document.getElementById('chat-messages');
+
+        // Auto-resize textarea
+        mainInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Handle form submission
+        chatForm.addEventListener('submit', function() {
+            const inputValue = mainInput.value.trim();
+            if (!inputValue) {
+                return false;
+            }
+            
+            // Clear input
+            mainInput.value = '';
+            mainInput.style.height = 'auto';
+        });
+
+        // Handle Enter key
+        mainInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Scroll to bottom on load
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Focus input
+        mainInput.focus();
+    });
+</script>
 {% endblock %}

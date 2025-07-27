@@ -31,6 +31,7 @@ class NewsArticles(models.Model):
     keywords = models.JSONField(default=list)
     is_active = models.BooleanField(default=True)
     scraped_date = models.DateTimeField(auto_now_add=True)
+    news_prompt = models.TextField(blank=True)  # Add this new field
 
     class Meta:
         ordering = ['-published_date']
@@ -40,22 +41,27 @@ class NewsArticles(models.Model):
 
 class TechNewsScraper:
     def __init__(self):
+        # Update sources to use TechCrunch category feeds
         self.sources = {
-            'techcrunch': {
+            'latest': {
                 'rss_url': 'https://techcrunch.com/feed/',
-                'name': 'TechCrunch'
+                'name': 'TechCrunch Latest'
             },
-            'hackernews': {
-                'rss_url': 'https://hnrss.org/frontpage',
-                'name': 'Hacker News'
+            'startups': {
+                'rss_url': 'https://techcrunch.com/startups/feed/',
+                'name': 'TechCrunch Startups'
             },
-            'dev_to': {
-                'rss_url': 'https://dev.to/feed',
-                'name': 'Dev.to'
+            'venture': {
+                'rss_url': 'https://techcrunch.com/venture/feed/',
+                'name': 'TechCrunch Venture'
             },
-            'verge': {
-                'rss_url': 'https://www.theverge.com/rss/index.xml',
-                'name': 'The Verge'
+            'ai': {
+                'rss_url': 'https://techcrunch.com/artificial-intelligence/feed/',
+                'name': 'TechCrunch AI'
+            },
+            'apps': {
+                'rss_url': 'https://techcrunch.com/apps/feed/',
+                'name': 'TechCrunch Apps'
             }
         }
 
@@ -73,12 +79,11 @@ class TechNewsScraper:
 
     def scrape_all_sources(self, limit_per_source=10):
         """
-        Scrape news from all configured sources after deleting existing articles.
+        Scrape news from all TechCrunch categories
         """
-        # Delete all existing articles
-        self.delete_all_articles()
-        
         total_articles = 0
+        
+        # Don't delete existing articles, just add new ones
         for source_key, source_config in self.sources.items():
             try:
                 articles_count = self.scrape_rss_feed(
@@ -90,7 +95,30 @@ class TechNewsScraper:
                 logger.info(f"Scraped {articles_count} articles from {source_config['name']}")
             except Exception as e:
                 logger.error(f"Error scraping {source_config['name']}: {str(e)}")
+        
         return total_articles
+
+    def generate_news_prompt(self, keywords: list) -> str:
+        """Generate idea prompt using article keywords"""
+        return f"""Generate an innovative and unique idea based on the combination of the following technological keywords: {', '.join(keywords)}.
+
+Provide a detailed description of the idea, including its potential impact, target audience, and a basic implementation approach. The idea should be practical yet creative, addressing a real-world problem across domains like technology, sustainability, or healthcare.
+
+Format the response with the following structure:
+
+**Idea Title**: [A catchy title for the idea]
+
+**Problem Statement**: [A detailed description of the problem being addressed, including its significance and who it affects]
+
+**Idea Description**: [A comprehensive explanation of the idea, how it leverages the given technologies, and its innovative aspects]
+
+**Potential Impact**: [The expected benefits, such as economic, social, or environmental impacts, and who will benefit]
+
+**Target Audience**: [Who the solution is intended for, e.g., businesses, consumers, specific industries]
+
+**Implementation Approach**: [A high-level plan for developing the solution, including key steps or technologies involved]
+
+Ensure the response is detailed, descriptive, at least 300 words, and strictly follows the specified format. Do not omit any section."""
 
     def scrape_rss_feed(self, rss_url, source_name, limit=10):
         """
@@ -151,6 +179,9 @@ class TechNewsScraper:
                     # Summarize content (fallback to summary or title)
                     summary_text = content or summary or title
 
+                    # Extract keywords (simple approach: split title into words, or use more advanced NLP if needed)
+                    keywords = [word.strip('.,:;!?()[]') for word in title.split() if len(word) > 3][:5]
+
                     # Analyze with Gemini API
                     try:
                         model = genai.GenerativeModel('gemini-1.5-flash')
@@ -165,18 +196,22 @@ class TechNewsScraper:
                         logger.error(f"Gemini API error for {title}: {str(e)}")
                         structured_content = summary_text  # Fallback to raw summary
 
+                    # Generate prompt using keywords
+                    news_prompt = self.generate_news_prompt(keywords)
+
                     # Save article
                     article, created = NewsArticles.objects.get_or_create(
                         url=url,
                         defaults={
                             'title': title,
                             'summary': summary,
+                            'content': content,
                             'source': source_name,
                             'published_date': published_date,
                             'image_url': image_url,
-                            'content': structured_content,
-                            'keywords': [],
-                            'is_active': True,
+                            'keywords': keywords,
+                            'news_prompt': news_prompt,  # Add the prompt
+                            'is_active': True
                         }
                     )
 
@@ -194,13 +229,13 @@ class TechNewsScraper:
             logger.error(f"Error scraping RSS feed {rss_url}: {str(e)}")
             return 0
 
-# Background task to scrape every 3 hours
-@background(schedule=timedelta(hours=3))
+# Background task to scrape every hour
+@background(schedule=timedelta(hours=1))
 def scheduled_news_scraping():
-    """Background task to scrape news every 3 hours"""
+    """Background task to scrape TechCrunch news every hour"""
     try:
         scraper = TechNewsScraper()
-        total_articles = scraper.scrape_all_sources(limit_per_source=10)
-        logger.info(f"Scheduled scraping completed: {total_articles} articles scraped")
+        total_articles = scraper.scrape_all_sources(limit_per_source=5)
+        logger.info(f"Scheduled TechCrunch scraping completed: {total_articles} articles scraped")
     except Exception as e:
         logger.error(f"Scheduled scraping failed: {str(e)}")

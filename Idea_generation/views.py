@@ -4,6 +4,8 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from .models import NewsArticle
 from .services.news_scraper import NewsArticles, TechNewsScraper  # Update import
+from .services.idea_generation import IdeaGenerationService
+import json
 
 def home(request):
     """
@@ -78,10 +80,39 @@ def news_detail(request, pk):
     return render(request, 'news_detail.html', context)
 
 def idea_generation(request):
-    idea = None
+    context = {}
+    idea_service = None
+
+    try:
+        idea_service = IdeaGenerationService()
+    except ValueError as e:
+        messages.error(request, str(e))
+        return redirect('home')
+
+    # Initialize or restore conversation
+    if 'conversation_history' in request.session:
+        idea_service.conversation_history = json.loads(request.session['conversation_history'])
+    else:
+        idea_service = IdeaGenerationService()
+
     if request.method == 'POST':
-        idea = request.POST.get('idea')
-    return render(request, 'idea_generation.html', {'idea': idea})
+        action = request.POST.get('action')
+        
+        if action == 'generate_idea':
+            news_id = request.POST.get('news_id')
+            generated_idea = idea_service.start_idea_conversation(int(news_id))
+            context['generated_idea'] = generated_idea
+
+        elif action == 'continue_conversation':
+            user_input = request.POST.get('user_input')
+            response = idea_service.continue_conversation(user_input)
+            context['conversation_response'] = response
+
+    # Save conversation history to session
+    request.session['conversation_history'] = json.dumps(idea_service.conversation_history)
+    context['conversation_history'] = idea_service.conversation_history
+
+    return render(request, 'idea_generation.html', context)
 
 def start_project(request):
     project_name = None

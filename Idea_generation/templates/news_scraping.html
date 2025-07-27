@@ -134,6 +134,41 @@
                     Read Original
                   </a>
                 </div>
+                <!-- Add this inside your article card div -->
+                <div class="article-actions" style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                    <a href="{{ article.url }}" target="_blank" class="read-btn" style="
+                      background: #2563eb;
+                      color: #fff;
+                      padding: 0.5rem 1rem;
+                      border-radius: 6px;
+                      text-decoration: none;
+                      font-size: 0.85rem;
+                      font-weight: 500;
+                      transition: all 0.2s;
+                    "
+                    onmouseover="this.style.background='#3b82f6'"
+                    onmouseout="this.style.background='#2563eb'">
+                      Read Article
+                    </a>
+                    <form method="POST" action="{% url 'idea_generation' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="news_id" value="{{ article.id }}">
+                        <button type="submit" 
+                                name="action" 
+                                value="generate_idea"
+                                style="
+                                    background: #2563eb;
+                                    color: #fff;
+                                    padding: 0.5rem 1rem;
+                                    border: none;
+                                    border-radius: 6px;
+                                    cursor: pointer;
+                                    font-weight: 500;
+                                    transition: all 0.2s;">
+                            💡 Generate Idea
+                        </button>
+                    </form>
+                </div>
               </div>
             </div>
             {% empty %}
