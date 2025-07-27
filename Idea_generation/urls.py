@@ -25,5 +25,6 @@ urlpatterns = [
     path('news/<int:pk>/', views.news_detail, name='news_detail'),
     path('ideas/', views.idea_generation, name='idea_generation'),
     path('start/', views.start_project, name='start_project'),
+    path('api/latest-news/', views.get_latest_news, name='get_latest_news'),
 ]
 
