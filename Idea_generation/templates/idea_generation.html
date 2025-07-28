@@ -29,4 +29,47 @@
   </div>
   {% endif %}
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mainInput = document.getElementById('main-input');
+        const chatForm = document.getElementById('chat-form');
+        const sendButton = document.getElementById('send-button');
+        const chatMessages = document.getElementById('chat-messages');
+
+        // Auto-resize textarea
+        mainInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Handle form submission
+        chatForm.addEventListener('submit', function() {
+            const inputValue = mainInput.value.trim();
+            if (!inputValue) {
+                return false;
+            }
+            
+            // Clear input
+            mainInput.value = '';
+            mainInput.style.height = 'auto';
+        });
+
+        // Handle Enter key
+        mainInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Scroll to bottom on load
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Focus input
+        mainInput.focus();
+    });
+</script>
 {% endblock %}

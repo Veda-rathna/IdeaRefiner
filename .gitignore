@@ -1,4 +1,5 @@
 \venv
-
 .env
-
+\neospark
+test.py
+gemini.py

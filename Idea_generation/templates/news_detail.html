@@ -1,27 +1,95 @@
 {% extends 'base.html' %}
 {% block title %}{{ article.title }}{% endblock %}
+
 {% block content %}
-<div style="max-width: 1000px; margin: 2rem auto; background: #181a1a; border-radius: 16px; box-shadow: 0 4px 32px rgba(0,0,0,0.35); padding: 3rem; position: relative;">
-  <button onclick="window.history.back()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: #333; color: #fff; border: none; border-radius: 6px; padding: 0.5rem 1rem; font-size: 1rem; cursor: pointer; z-index: 10; transition: background 0.2s;">✕ Close</button>
-  <div style="display: flex; align-items: flex-start; gap: 2rem;">
-    <img src="{{ article.image_url|default:'https://placehold.co/180x180?text=No+Image' }}" alt="News Image" style="width: 180px; height: 180px; object-fit: cover; border-radius: 12px; background: #222; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" />
-    <div style="flex: 1;">
-      <h1 style="color: #fff; font-size: 2rem; margin-bottom: 0.5rem; line-height: 1.2;">{{ article.title }}</h1>
-      <div style="color: #d1d5db; font-size: 1rem; margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-        <span style="background: #333; color: #d1d5db; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500;">{{ article.source }}</span>
-        {% if article.published_date %}
-          <span style="color: #888;">{{ article.published_date|date:"M d, Y H:i" }}</span>
+<div style="max-width: 820px; margin: 2.5rem auto; padding: 0 1.5rem; background: #151718; box-shadow: 0 4px 24px 0 #0002; border-radius: 18px;">
+    <!-- Back Button -->
+    <a href="{% url 'news_scraping' %}" style="
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #000;
+        text-decoration: none;
+        margin-bottom: 2.5rem;
+        font-weight: 500;
+        font-size: 1.05rem;
+        letter-spacing: 0.01em;
+        border-radius: 8px;
+        padding: 0.4rem 1.1rem;
+        background: #fff;
+        box-shadow: 0 2px 8px 0 #0001;
+        transition: background 0.2s, color 0.2s;
+    " onmouseover="this.style.background='#f0f0f0';this.style.color='#000'" onmouseout="this.style.background='#fff';this.style.color='#000'">
+        ← Back to News
+    </a>
+
+    <!-- Article Content -->
+    <article style="
+        background: #181a1a;
+        border: 1.5px solid #2d3748;
+        border-radius: 18px;
+        padding: 2.2rem 2rem 2.5rem 2rem;
+        color: #f3f4f6;
+        box-shadow: 0 2px 12px 0 #0002;
+    ">
+        <!-- Header -->
+        <header style="margin-bottom: 2.2rem;">
+            <h1 style="font-size: 2.3rem; line-height: 1.25; margin-bottom: 1.1rem; font-weight: 700; letter-spacing: -0.01em; color: #e0e7ef;">
+                {{ article.title }}
+            </h1>
+            <div style="display: flex; gap: 1.2rem; color: #7dd3fc; font-size: 1rem; align-items: center;">
+                <span style="font-weight: 500;">{{ article.source }}</span>
+                <span style="font-size: 1.2em;">•</span>
+                <time style="color: #a1a1aa;">{{ article.published_date|date:"F j, Y" }}</time>
+            </div>
+        </header>
+
+        <!-- Image -->
+        {% if article.image_url %}
+        <div style="margin-bottom: 2.2rem; display: flex; justify-content: center;">
+            <img src="{{ article.image_url }}" 
+                 alt="Article image"
+                 style="width: 100%; max-width: 700px;
+                        border-radius: 14px; 
+                        max-height: 420px; 
+                        object-fit: cover;
+                        box-shadow: 0 2px 16px 0 #0003;" />
+        </div>
         {% endif %}
-      </div>
-      <!-- Removed duplicate summary. Only show content below. -->
-      <a href="{{ article.url }}" target="_blank" style="background: #fff; color: #000; padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s ease;">Read Original</a>
-    </div>
-  </div>
-  {% if article.content %}
-    <hr style="margin: 2rem 0; border: none; border-top: 1px solid #333;" />
-    <div style="color: #d1d5db; font-size: 1.1rem; line-height: 1.8; background: #222; border-radius: 8px; padding: 1.5rem; margin-top: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-      {{ article.content|linebreaks }}
-    </div>
-  {% endif %}
+
+        <!-- Content -->
+        <div style="
+            line-height: 1.7;
+            color: #d1d5db;
+            font-size: 1.13rem;
+            letter-spacing: 0.01em;
+            margin-bottom: 1.5rem;
+        ">
+            {{ article.content|linebreaks }}
+        </div>
+
+        <!-- Footer -->
+        <footer style="margin-top: 2.5rem; padding-top: 2.2rem; border-top: 1.5px solid #2d3748; text-align: right;">
+            <a href="{{ article.url }}" 
+               target="_blank"
+               rel="noopener noreferrer"
+               style="
+                    display: inline-block;
+                    background: #fff;
+                    color: #000;
+                    padding: 0.85rem 1.7rem;
+                    border-radius: 10px;
+                    text-decoration: none;
+                    font-size: 1.08rem;
+                    font-weight: 600;
+                    box-shadow: 0 2px 8px 0 #0002;
+                    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+               "
+               onmouseover="this.style.background='#f0f0f0';this.style.color='#000';this.style.boxShadow='0 4px 16px 0 #0003'"
+               onmouseout="this.style.background='#fff';this.style.color='#000';this.style.boxShadow='0 2px 8px 0 #0002'">
+                Read Original Article →
+            </a>
+        </footer>
+    </article>
 </div>
 {% endblock %}
