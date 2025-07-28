@@ -1,36 +1,38 @@
 {% extends 'base.html' %} {% block title %}Idea Generation{% endblock %} {%block content %}
-<div style="max-width: 520px; margin: 2.5rem auto; padding: 2.5rem 1.5rem; background: #151718; box-shadow: 0 4px 24px 0 #0002; border-radius: 18px; text-align: center;">
-  <h2 style="color: #fff; font-size: 2rem; font-weight: 700; margin-bottom: 0.7rem;">Idea Generation</h2>
-  <p style="color: #d1d5db; opacity: 0.85; font-size: 1.08rem; margin-bottom: 1.5rem;">Generate new ideas and brainstorm innovative concepts.</p>
-  <form method="post" style="margin-bottom: 2.2rem;">
-    {% csrf_token %}
-    <input type="text" name="idea" placeholder="Enter your idea..." style="width: 100%; padding: 0.85rem; background: #181a1a; border: 1.5px solid #2d3748; color: #fff; border-radius: 10px; font-size: 1.08rem; margin-bottom: 1.1rem;" />
-    <button
-      type="submit"
-      style="
-        margin-top: 0.7rem;
-        background: #fff;
-        color: #000;
-        border: none;
-        padding: 0.8rem 1.7rem;
-        border-radius: 10px;
-        font-size: 1.08rem;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 2px 8px 0 #0002;
-        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-      "
-      onmouseover="this.style.background='#f0f0f0';this.style.color='#000';this.style.boxShadow='0 4px 16px 0 #0003'"
-      onmouseout="this.style.background='#fff';this.style.color='#000';this.style.boxShadow='0 2px 8px 0 #0002'"
-    >
-      Submit
-    </button>
-  </form>
-  {% if idea %}
-  <div style="margin-top: 2.2rem; color: #fff; font-size: 1.08rem;">
-    Submitted Idea: <span style="color: #7dd3fc; font-weight: 500;">{{ idea }}</span>
+<div style="padding: 2.5rem 1.5rem 0 1.5rem; min-height: 100vh; display: flex; flex-direction: column; align-items: center;">
+  <div style="width: 100%; max-width: 520px; text-align: center;">
+    <h2 style="color: #fff; font-size: 2rem; font-weight: 700; margin-bottom: 0.7rem;">Idea Generation</h2>
+    <p style="color: #d1d5db; opacity: 0.85; font-size: 1.08rem; margin-bottom: 1.5rem;">Generate new ideas and brainstorm innovative concepts.</p>
+    <form method="post" style="margin-bottom: 2.2rem;">
+      {% csrf_token %}
+      <input type="text" name="idea" placeholder="Enter your idea..." style="width: 100%; padding: 0.85rem; background: #181a1a; border: 1.5px solid #2d3748; color: #fff; border-radius: 10px; font-size: 1.08rem; margin-bottom: 1.1rem;" />
+      <button
+        type="submit"
+        style="
+          margin-top: 0.7rem;
+          background: #fff;
+          color: #000;
+          border: none;
+          padding: 0.8rem 1.7rem;
+          border-radius: 10px;
+          font-size: 1.08rem;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 2px 8px 0 #0002;
+          transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        "
+        onmouseover="this.style.background='#f0f0f0';this.style.color='#000';this.style.boxShadow='0 4px 16px 0 #0003'"
+        onmouseout="this.style.background='#fff';this.style.color='#000';this.style.boxShadow='0 2px 8px 0 #0002'"
+      >
+        Submit
+      </button>
+    </form>
+    {% if idea %}
+    <div style="margin-top: 2.2rem; color: #fff; font-size: 1.08rem;">
+      Submitted Idea: <span style="color: #7dd3fc; font-weight: 500;">{{ idea }}</span>
+    </div>
+    {% endif %}
   </div>
-  {% endif %}
 </div>
 
 <script>
