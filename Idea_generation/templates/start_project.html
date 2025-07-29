@@ -1,49 +1,51 @@
 {% extends 'base.html' %} {% block title %}Start Project{% endblock %} {% block content %}
-<div style="max-width: 540px; margin: 2.5rem auto; padding: 2.5rem 1.5rem; background: #151718; box-shadow: 0 4px 24px 0 #0002; border-radius: 18px; text-align: center;">
-  <h2 style="color: #e0e7ef; font-size: 2rem; font-weight: 700; margin-bottom: 0.7rem;">Start Project</h2>
-  <p style="color: #d1d5db; opacity: 0.85; font-size: 1.08rem; margin-bottom: 1.2rem;">Initiate a new project based on your ideas.</p>
-  <form method="post">
-    {% csrf_token %}
-    <input
-      type="text"
-      name="project_name"
-      placeholder="Project name..."
-      style="
-        width: 100%;
-        padding: 0.8rem;
-        background: #181a1a;
-        border: 1.5px solid #2d3748;
-        color: #fff;
-        border-radius: 10px;
-        font-size: 1.08rem;
-        margin-bottom: 0.7rem;
-      "
-    />
-    <button
-      type="submit"
-      style="
-        margin-top: 1rem;
-        background: #fff;
-        color: #000;
-        border: none;
-        padding: 0.8rem 1.7rem;
-        border-radius: 10px;
-        font-size: 1.08rem;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 2px 8px 0 #0002;
-        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-      "
-      onmouseover="this.style.background='#f0f0f0';this.style.color='#000';this.style.boxShadow='0 4px 16px 0 #0003'"
-      onmouseout="this.style.background='#fff';this.style.color='#000';this.style.boxShadow='0 2px 8px 0 #0002'"
-    >
-      Start
-    </button>
-  </form>
-  {% if project_name %}
-  <div style="margin-top: 2rem; color: #fff; font-size: 1.08rem;">
-    Started Project: <span style="color: #7dd3fc; font-weight: 500;">{{ project_name }}</span>
+<div style="padding: 2.5rem 1.5rem 0 1.5rem; min-height: 100vh; display: flex; flex-direction: column; align-items: center;">
+  <div style="width: 100%; max-width: 540px; text-align: center;">
+    <h2 style="color: #e0e7ef; font-size: 2rem; font-weight: 700; margin-bottom: 0.7rem;">Start Project</h2>
+    <p style="color: #d1d5db; opacity: 0.85; font-size: 1.08rem; margin-bottom: 1.2rem;">Initiate a new project based on your ideas.</p>
+    <form method="post">
+      {% csrf_token %}
+      <input
+        type="text"
+        name="project_name"
+        placeholder="Project name..."
+        style="
+          width: 100%;
+          padding: 0.8rem;
+          background: #181a1a;
+          border: 1.5px solid #2d3748;
+          color: #fff;
+          border-radius: 10px;
+          font-size: 1.08rem;
+          margin-bottom: 0.7rem;
+        "
+      />
+      <button
+        type="submit"
+        style="
+          margin-top: 1rem;
+          background: #fff;
+          color: #000;
+          border: none;
+          padding: 0.8rem 1.7rem;
+          border-radius: 10px;
+          font-size: 1.08rem;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 2px 8px 0 #0002;
+          transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        "
+        onmouseover="this.style.background='#f0f0f0';this.style.color='#000';this.style.boxShadow='0 4px 16px 0 #0003'"
+        onmouseout="this.style.background='#fff';this.style.color='#000';this.style.boxShadow='0 2px 8px 0 #0002'"
+      >
+        Start
+      </button>
+    </form>
+    {% if project_name %}
+    <div style="margin-top: 2rem; color: #fff; font-size: 1.08rem;">
+      Started Project: <span style="color: #7dd3fc; font-weight: 500;">{{ project_name }}</span>
+    </div>
+    {% endif %}
   </div>
-  {% endif %}
 </div>
 {% endblock %}
