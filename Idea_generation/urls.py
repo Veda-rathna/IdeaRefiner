@@ -16,15 +16,18 @@ Including another URLconf
 """
 # urls.py (main project urls.py)
 
-from django.urls import path
+from django.urls import path, include
+from django.contrib import admin
 from . import views
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('news/', views.news_scraping, name='news_scraping'),
     path('news/<int:pk>/', views.news_detail, name='news_detail'),
     path('idea-generation/', views.idea_generation, name='idea_generation'),
     path('start/', views.start_project, name='start_project'),
     path('api/latest-news/', views.get_latest_news, name='get_latest_news'),
+    path('accounts/', include('allauth.urls')),
 ]
 
