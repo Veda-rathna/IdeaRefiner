@@ -118,13 +118,16 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 # Database
+
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+import dj_database_url
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(
+        env('POSTGRES_URL', default='postgresql://idearefinerdb_user:B5bS4tH00iFMFkdS5rsplbiyZdr0Q2AN@dpg-d24u21vgi27c73beufb0-a.oregon-postgres.render.com/idearefinerdb'),
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 
