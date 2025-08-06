@@ -107,13 +107,7 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # Google provider settings (replace with your credentials)
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': env('GOOGLE_CLIENT_ID', default='your-google-client-id'),
-            'secret': env('GOOGLE_CLIENT_SECRET', default='your-google-client-secret'),
-            'key': ''
-        }
-    }
+    'google': {}
 }
 
 
