@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-gs8*84ivc=w+v!b!c!*qy*de@uq_3w99pj&r_h%yi7@hvs7y3h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'idearefiner.onrender.com']
 
 
 # Application definition
