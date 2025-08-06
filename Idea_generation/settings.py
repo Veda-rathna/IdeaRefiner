@@ -175,3 +175,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Google API Key
 GOOGLE_API_KEY = env('GOOGLE_API_KEY', default=None)
+# CSRF trusted origins for production
+CSRF_TRUSTED_ORIGINS = [
+    'https://idearefiner.onrender.com',
+]
