@@ -94,7 +94,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Site ID for django.contrib.sites
-SITE_ID = 1
+SITE_ID = int(env('SITE_ID', default=2))
 
 # Redirect URLs
 LOGIN_REDIRECT_URL = '/'
