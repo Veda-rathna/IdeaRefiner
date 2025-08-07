@@ -11,12 +11,14 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
             background: #0a0a0a;
             color: #e0e0e0;
             font-family: "Inter", "Segoe UI", Arial, sans-serif;
             margin: 0;
             min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
         }
 
         .container {
@@ -259,11 +261,13 @@
 
         .main {
             flex: 1;
-            margin-left: 0;
+            margin-left: 70px;
             padding: 1rem 2rem;
             background: #0a0a0a;
             min-height: calc(100vh - 60px);
-            width: 100%;
+            width: auto;
+            box-sizing: border-box;
+            overflow-x: hidden;
         }
 
         /* Tooltip for collapsed sidebar */
@@ -310,7 +314,7 @@
             }
 
             .main {
-                margin-left: 110px;
+                margin-left: 70px;
             }
 
             .sidebar-overlay {
@@ -437,57 +441,41 @@
             </div>
             Idea Refiner
         </div>
-        
-        <ul class="navbar-nav">
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'news_scraping' %}">Tech News</a></li>
-            <li><a href="{% url 'idea_generation' %}">Idea Generation</a></li>
-            <li><a href="{% url 'start_project' %}">Start Project</a></li>
-        </ul>
-        
-        <button class="mobile-menu-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-        </button>
+        <div style="margin-left: auto;">
+            {% load socialaccount %}
+            <a href="{% provider_login_url 'google' %}" style="background: #ea4335; color: #fff; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 500;">Login with Google</a>
+        </div>
     </div>
-    
-    <div class="sidebar-overlay"></div>
-    
-    <div class="container">
-        <nav class="sidebar">
-            <div class="sidebar-content">
-                <ul class="nav">
-                    <li class="nav-item" data-tooltip="Home">
-                        <a href="{% url 'home' %}">
-                            <span class="nav-icon home"></span>
-                            <span class="nav-text">Home</span>
-                        </a>
-                    </li>
-                    <li class="nav-item" data-tooltip="Tech News">
-                        <a href="{% url 'news_scraping' %}">
-                            <span class="nav-icon news"></span>
-                            <span class="nav-text">Tech News</span>
-                        </a>
-                    </li>
-                    <li class="nav-item" data-tooltip="Idea Generation">
-                        <a href="{% url 'idea_generation' %}">
-                            <span class="nav-icon idea"></span>
-                            <span class="nav-text">Idea Generation</span>
-                        </a>
-                    </li>
-                    <li class="nav-item" data-tooltip="Start Project">
-                        <a href="{% url 'start_project' %}">
-                            <span class="nav-icon project"></span>
-                            <span class="nav-text">Start Project</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <main class="main">{% block content %}{% endblock %}</main>
+    <div class="sidebar">
+        <div class="sidebar-content">
+            <ul class="nav">
+                <li class="nav-item" data-tooltip="Home">
+                    <a href="{% url 'home' %}">
+                        <span class="nav-icon home"></span>
+                        <span class="nav-text">Home</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-tooltip="Tech News">
+                    <a href="{% url 'news_scraping' %}">
+                        <span class="nav-icon news"></span>
+                        <span class="nav-text">Tech News</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-tooltip="Idea Generation">
+                    <a href="{% url 'idea_generation' %}">
+                        <span class="nav-icon idea"></span>
+                        <span class="nav-text">Idea Generation</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-tooltip="Start Project">
+                    <a href="{% url 'start_project' %}">
+                        <span class="nav-icon project"></span>
+                        <span class="nav-text">Start Project</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
+    <main class="main">{% block content %}{% endblock %}</main>
 </body>
 </html>

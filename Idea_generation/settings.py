@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-gs8*84ivc=w+v!b!c!*qy*de@uq_3w99pj&r_h%yi7@hvs7y3h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'idearefiner.onrender.com']
 
 
 # Application definition
@@ -45,9 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Idea_generation',
-    'background_task'    
-    
-    
+    'background_task',
+    # Allauth and social auth
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'Idea_generation.urls'
@@ -82,15 +87,41 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Idea_generation.wsgi.application'
 
+# Authentication backends for allauth
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Site ID for django.contrib.sites
+SITE_ID = int(env('SITE_ID', default=2))
+
+# Redirect URLs
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Allauth settings
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Google provider settings (replace with your credentials)
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {}
+}
+
 
 # Database
+
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+import dj_database_url
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(
+        env('POSTGRES_URL', default='postgresql://idearefinerdb_user:B5bS4tH00iFMFkdS5rsplbiyZdr0Q2AN@dpg-d24u21vgi27c73beufb0-a.oregon-postgres.render.com/idearefinerdb'),
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 
@@ -130,10 +161,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 STATIC_URL = 'static/'
 
-# Add the 'project/dist' directory as a static files directory (for built frontend assets)
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'project', 'dist'),
-]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -142,3 +169,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Google API Key
 GOOGLE_API_KEY = env('GOOGLE_API_KEY', default=None)
+# CSRF trusted origins for production
+CSRF_TRUSTED_ORIGINS = [
+    'https://idearefiner.onrender.com',
+]
